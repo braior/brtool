@@ -18,46 +18,47 @@ var (
 	logrusLogger *log.Logger
 )
 
-// BRLogger BRLogger
-type BRLogger struct{}
+// BRFileLogger BRFileLogger
+type BRFileLogger struct{}
 
 // logrusEntry 返回logrusEntry
-func (logger *BRLogger) logrusEntry(commonfFileds map[string]interface{}) *log.Entry {
+func (logger *BRFileLogger) logrusEntry(commonfFileds map[string]interface{}) *log.Entry {
 	return logrusLogger.WithFields(log.Fields(commonfFileds))
 }
 
 // Debug Debug日志
-func (logger *BRLogger) Debug(commonfFileds map[string]interface{}, message string) {
+func (logger *BRFileLogger) Debug(commonfFileds map[string]interface{}, message string) {
 	logger.logrusEntry(commonfFileds).Debugf("%s", message)
 }
 
 // Info Inf日志
-func (logger *BRLogger) Info(commonfFileds map[string]interface{}, message string) {
+func (logger *BRFileLogger) Info(commonfFileds map[string]interface{}, message string) {
 	logger.logrusEntry(commonfFileds).Infof("%s", message)
 }
 
 // Warn Warn日志
-func (logger *BRLogger) Warn(commonFields map[string]interface{}, message string) {
+func (logger *BRFileLogger) Warn(commonFields map[string]interface{}, message string) {
 	logger.logrusEntry(commonFields).Warnf("%s", message)
 }
 
 // Error Error日志
-func (logger *BRLogger) Error(commonFields map[string]interface{}, message string) {
+func (logger *BRFileLogger) Error(commonFields map[string]interface{}, message string) {
 	logger.logrusEntry(commonFields).Errorf("%s", message)
 }
 
 // Fatal Fatal日志
-func (logger *BRLogger) Fatal(commonFields map[string]interface{}, message string) {
+func (logger *BRFileLogger) Fatal(commonFields map[string]interface{}, message string) {
 	logger.logrusEntry(commonFields).Fatalf("%s", message)
 }
 
 // Panic Panic日志
-func (logger *BRLogger) Panic(commonFields map[string]interface{}, message string) {
+func (logger *BRFileLogger) Panic(commonFields map[string]interface{}, message string) {
 	logger.logrusEntry(commonFields).Panicf("%s", message)
 }
 
-// BRLog 定义
-type BRLog struct {
+// BRFileLog 定义
+type BRFileLog struct {
+
 	// log 路径
 	LogPath string
 
@@ -83,8 +84,8 @@ type BRLog struct {
 	RotationTime time.Duration
 }
 
-// NewBRLog 返回BRLog对象和目录创建失败error
-func NewBRLog(logPath string) (*BRLog, error) {
+// NewBRFileLog 返回BRFileLog对象和目录创建失败error
+func NewBRFileLog(logPath string) (*BRFileLog, error) {
 	if logPath == "" {
 		return nil, errors.New("the log path must be provided")
 	}
@@ -97,7 +98,7 @@ func NewBRLog(logPath string) (*BRLog, error) {
 		}
 	}
 
-	return &BRLog{
+	return &BRFileLog{
 		LogPath:            logPath,
 		LogType:            "json",
 		LogLevel:           log.InfoLevel,
@@ -110,24 +111,24 @@ func NewBRLog(logPath string) (*BRLog, error) {
 }
 
 // SetLogType 设置日志格式 json|text
-func (b *BRLog) SetLogType(logType string) {
+func (b *BRFileLog) SetLogType(logType string) {
 	b.LogType = logType
 }
 
 // SetMaxAge 设置最大保留时间 单位：天
-func (b *BRLog) SetMaxAge(day time.Duration) {
+func (b *BRFileLog) SetMaxAge(day time.Duration) {
 	b.MaxAge = day * 24 * time.Hour
 }
 
 // SetRotationTime 设置日志多久轮转一次
 // 单位: 天
-func (b *BRLog) SetRotationTime(day time.Duration) {
+func (b *BRFileLog) SetRotationTime(day time.Duration) {
 	b.RotationTime = day * 24 * time.Hour
 }
 
 // SetLevel 设置log level
 // debug|info|warn|error|fatal|panic
-func (b *BRLog) SetLevel(level string) {
+func (b *BRFileLog) SetLevel(level string) {
 	switch strings.ToLower(level) {
 	case "panic":
 		b.LogLevel = log.PanicLevel
@@ -146,12 +147,12 @@ func (b *BRLog) SetLevel(level string) {
 
 // SetDateFormat 设置日期格式
 // format "%Y-%m-%d" | "%Y%m%d"
-func (b *BRLog) SetDateFormat(format string) {
+func (b *BRFileLog) SetDateFormat(format string) {
 	b.FileNameDateFormat = format
 }
 
 // SetSeparateLevelLog 设置是否分离不同级别的日志到不同的文件
-func (b *BRLog) SetSeparateLevelLog(yesorno bool) {
+func (b *BRFileLog) SetSeparateLevelLog(yesorno bool) {
 	b.IsSeparateLevelLog = yesorno
 }
 
@@ -165,7 +166,7 @@ func setNull() *bufio.Writer {
 }
 
 // GetLogger getlogger
-func (b *BRLog) GetLogger() (*BRLogger, error) {
+func (b *BRFileLog) GetLogger() (*BRFileLogger, error) {
 	logrusLogger = log.New()
 	switch b.LogType {
 	case "text":
@@ -179,6 +180,7 @@ func (b *BRLog) GetLogger() (*BRLogger, error) {
 	}
 
 	logrusLogger.Level = b.LogLevel
+
 	maxAge := rotatelogs.WithMaxAge(b.MaxAge)
 	ratateDuration := rotatelogs.WithRotationTime(b.RotationTime)
 
@@ -267,5 +269,5 @@ func (b *BRLog) GetLogger() (*BRLogger, error) {
 			logrusLogger.Out = os.Stdout
 		}
 	}
-	return &BRLogger{}, nil
+	return &BRFileLogger{}, nil
 }

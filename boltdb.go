@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 	"path"
+	"time"
 
 	"github.com/boltdb/bolt"
 )
@@ -36,7 +37,8 @@ func NewBoltDB(dbPath, tableName string) (*BoltDB, error) {
 
 // talbe 获取表，表不存在则创建
 func (btb *BoltDB) table() error {
-	db, err := bolt.Open(btb.DBPath, 0600, nil)
+	var err error
+	db, err = bolt.Open(btb.DBPath, 0600, &bolt.Options{Timeout: 1 * time.Second})
 	if err != nil {
 		return fmt.Errorf("open db error: %s", err)
 	}
@@ -57,11 +59,13 @@ func (btb *BoltDB) Set(kv map[string][]byte) error {
 		return err
 	}
 	defer db.Close()
+	fmt.Println(kv)
 
 	return db.Batch(func(tx *bolt.Tx) error {
 		b := tx.Bucket([]byte(btb.TableName))
 		var err error
 		for k, v := range kv {
+			fmt.Println(k,v)
 			err = b.Put([]byte(k), v)
 			if err != nil {
 				return err

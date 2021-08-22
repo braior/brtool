@@ -59,13 +59,11 @@ func (btb *BoltDB) Set(kv map[string][]byte) error {
 		return err
 	}
 	defer db.Close()
-	fmt.Println(kv)
 
 	return db.Batch(func(tx *bolt.Tx) error {
 		b := tx.Bucket([]byte(btb.TableName))
 		var err error
 		for k, v := range kv {
-			fmt.Println(k,v)
 			err = b.Put([]byte(k), v)
 			if err != nil {
 				return err

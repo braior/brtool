@@ -31,9 +31,3 @@ func Test_BoltDB_Set(t *testing.T) {
 		t.Errorf("get key will be 123, but got %s", string(result["root"]))
 	}
 }
-
-// func TestNewJWToken(t *testing.T) {
-// 	if ans := NewJWToken("myToken"); ans.SignString != "yToken" {
-// 		t.Errorf("return mytoken, but %s got", ans.SignString)
-// 	}
-// }

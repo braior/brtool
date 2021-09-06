@@ -27,7 +27,7 @@ func (d *DingTalkClient) SendMessage() (bool, error) {
 	case "text":
 		message = fmt.Sprintf(`{"msgtype": "text", "text": {"content":"%s"}}`, d.MsgInfo.Message)
 	case "markdown":
-		message = fmt.Sprintf(`{"msgtye": "markdown", "markdown": {"title":%s,"text":"%s"}}`, d.MsgInfo.Title, d.MsgInfo.Message)
+		message = fmt.Sprintf(`{"msgtype": "markdown", "markdown": {"title":%s,"text":"%s"}}`, d.MsgInfo.Title, d.MsgInfo.Message)
 	default:
 		message = fmt.Sprintf(`{"msgtype": "text", "text": {"content": "%s"}}`, d.MsgInfo.Message)
 	}

@@ -16,12 +16,15 @@ func TestSendMessage(t *testing.T) {
 		},
 	}
 
-	_, err := dingtalk.SendMessage()
+	ok, err := dingtalk.SendMessage()
 	if err != nil {
 		dingFields := map[string]interface{}{
 			"entryType":      "DingTalkRobot",
 			"dingTalkRobot ": robotURL,
 		}
 		t.Errorf("send %s failed: %s", dingFields, err)
+	}
+	if !ok{
+		t.Errorf("send failed: %s",err)
 	}
 }

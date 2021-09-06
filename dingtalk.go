@@ -2,6 +2,7 @@ package brtool
 
 import (
 	"bytes"
+	"encoding/json"
 	"fmt"
 	"io/ioutil"
 	"net/http"
@@ -20,9 +21,17 @@ type DingTalkClient struct {
 	MsgInfo  *DingTalkMessage
 }
 
+// DingTalkResponse 。。。
+type DingTalkResponse struct {
+	ErrCode int64  `json:"errcode"`
+	ErrMsg  string `json:"errmsg"`
+}
+
 // SendMessage 通过钉钉机器人发送消息
 func (d *DingTalkClient) SendMessage() (bool, error) {
 	var message string
+	dingTalkRresponse := new(DingTalkResponse)
+
 	switch d.MsgInfo.Type {
 	case "text":
 		message = fmt.Sprintf(`{"msgtype": "text", "text": {"content": "%s"}}`, d.MsgInfo.Message)
@@ -40,11 +49,18 @@ func (d *DingTalkClient) SendMessage() (bool, error) {
 		return false, fmt.Errorf("connect dingtalk url failed: %s", err)
 	}
 
-	if response.StatusCode != 200 {
-		body, _ := ioutil.ReadAll(response.Body)
-		return false, fmt.Errorf("dingtalk response satus code is not 200 but is %d, respone body is: %s", response.StatusCode, string(body))
+	body, _ := ioutil.ReadAll(response.Body)
+	err = json.Unmarshal(body, &dingTalkRresponse)
+	if err != nil {
+		return false, fmt.Errorf("parse json data error: %s", err)
 	}
 
-	ioutil.ReadAll(response.Body)
+	if dingTalkRresponse.ErrCode != int64(0) {
+		return false, fmt.Errorf("send message failed: %s", string(body))
+	}
+
+	if response.StatusCode != 200 {
+		return false, fmt.Errorf("dingtalk response satus code is not 200 but is %d, respone body is: %s", response.StatusCode, string(body))
+	}
 	return true, nil
 }

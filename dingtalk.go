@@ -37,12 +37,12 @@ func (d *DingTalkClient) SendMessage() (bool, error) {
 	request.Header.Set("Content-type", "application/json")
 	response, err := client.Do(request)
 	if err != nil {
-		return false, fmt.Errorf("connect dingtalk url(%s) failed: %s", d.RobotURL, err)
+		return false, fmt.Errorf("connect dingtalk url failed: %s", err)
 	}
 
 	if response.StatusCode != 200 {
 		body, _ := ioutil.ReadAll(response.Body)
-		return false, fmt.Errorf("dingtalk response satus code is not 200 but is %d, respone body is: %s",response.StatusCode, string(body))
+		return false, fmt.Errorf("dingtalk response satus code is not 200 but is %d, respone body is: %s", response.StatusCode, string(body))
 	}
 
 	ioutil.ReadAll(response.Body)

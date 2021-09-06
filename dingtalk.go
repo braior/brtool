@@ -34,7 +34,7 @@ func (d *DingTalkClient) SendMessage() (bool, error) {
 
 	client := &http.Client{}
 	request, _ := http.NewRequest("POST", d.RobotURL, bytes.NewBuffer([]byte(message)))
-	request.Header.Set("Context-type", "application/json")
+	request.Header.Set("Content-type", "application/json")
 	response, err := client.Do(request)
 	if err != nil {
 		return false, fmt.Errorf("connect dingtalk url(%s) failed: %s", d.RobotURL, err)

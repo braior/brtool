@@ -40,9 +40,9 @@ func (d *DingTalkClient) SendMessage() (bool, error) {
 		return false, fmt.Errorf("connect dingtalk url(%s) failed: %s", d.RobotURL, err)
 	}
 
-	if response.Status != "200" {
+	if response.StatusCode != 200 {
 		body, _ := ioutil.ReadAll(response.Body)
-		return false, fmt.Errorf("connect dingtalk url(%s) failed: %s", d.RobotURL, string(body))
+		return false, fmt.Errorf("dingtalk response satus code is not 200 but is %d, respone body is: %s",response.StatusCode, string(body))
 	}
 
 	ioutil.ReadAll(response.Body)

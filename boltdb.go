@@ -29,7 +29,7 @@ func NewBoltDB(dbPath, tableName string) (*BoltDB, error) {
 	if !IsExist(dirName){
 		err := os.MkdirAll(dirName, os.ModePerm)
 		if err != nil {
-			return nil, fmt.Errorf("create dir(%s) error: %s", dirname, err)
+			return nil, fmt.Errorf("create dir(%s) error: %s", dirName, err)
 		}
 	}
 	return &BoltDB{DBPath: dbPath, TableName: tableName}, nil

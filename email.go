@@ -63,8 +63,8 @@ func NewEmailClient(host, username, password string, port int, message *EmailMes
 
 // SendMessage 发送邮件
 func (c *EmailClient) SendMessage() (bool, error) {
-	e := gomail.NewPlainDialer(c.Host, c.Port, c.Username, c.Password)
-	if 587 == c.Port {
+	e := gomail.NewDialer(c.Host, c.Port, c.Username, c.Password)
+	if c.Port == 587 {
 		e.TLSConfig = &tls.Config{InsecureSkipVerify: true}
 	}
 
